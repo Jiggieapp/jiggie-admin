@@ -1,0 +1,43 @@
+{
+  "name": "JiggieAdmin",
+  "version": "1.0.0",
+  "authors": [
+    "Jiggieapp (support@jiggieapp.com)"
+  ],
+  "copyright": "Jiggieapp Partyhost, email: support@jiggieapp.com",
+  "description": "Jiggie - ReactJS & Nodejs Admin App",
+  "moduleType": [
+    "es6",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "admin",
+    "Jiggie",
+    "reactjs"
+  ],
+  "homepage": "http://jiggieapp.com",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "eventemitter2": "~0.4.14",
+    "react": "~0.13.3",
+    "modernizr": "~2.8.3",
+    "jquery": "~2.1.4",
+    "codemirror": "~5.4.0",
+    "vex": "~2.3.2",
+    "jquery-ui": "~1.11.4",
+    "chartjs": "~1.0.2",
+    "moment": "~2.10.3",
+    "trumbowyg": "~1.1.7",
+    "blueimp-gallery": "~2.15.2",
+    "c3": "~0.4.10"
+  }
+}
