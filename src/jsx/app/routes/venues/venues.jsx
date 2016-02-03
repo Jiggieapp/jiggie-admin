@@ -17,12 +17,14 @@ var intervalHandle = null;
 
 var Body = React.createClass({
   mixins: [State, Navigation],
+  newVenue: function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.transitionTo('/app/venues/new');
+  },
+
   getInitialState: function(){
-    return {
-       data: {
-          venues: []
-       }
-    };
+     return {data: []};
   },
   loadFromServer: function() {
     $.ajax({
@@ -33,10 +35,9 @@ var Body = React.createClass({
       cache: false,
       success: function(data) {
         //console.log(data);
-      if (this.isMounted()) {
         this.setState({data: data});
         clearInterval(intervalHandle);
-      }
+
       }.bind(this),
       error: function(xhr, status, err) {
       //console.error(this.props.url, status, err.toString());
@@ -45,7 +46,7 @@ var Body = React.createClass({
   },
   componentDidMount: function() {
     intervalHandle = setInterval(this.loadFromServer, 1);
-    $('#example')
+    $('#examplex')
       .addClass('nowrap')
       .dataTable({
         responsive: true,
@@ -71,7 +72,7 @@ var Body = React.createClass({
                                <h3>Venues Jiggie</h3>
                              </Col>
                              <Col xs={6}>
-                               <p className='text-right' style={{paddingTop: '10px'}}><Icon className='fg-white' style={{fontSize:'28px', fontWeight:'bold', cursor: 'pointer'}} glyph='icon-nargela-plus' onClick={this.newMember}></Icon>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Icon className='fg-white' style={{fontSize:'28px', fontWeight:'bold'}} glyph='icon-nargela-download'></Icon></p>
+                               <p className='text-right' style={{paddingTop: '10px'}}><Icon className='fg-white' style={{fontSize:'28px', fontWeight:'bold', cursor: 'pointer'}} glyph='icon-nargela-plus' onClick={this.newVenue}></Icon>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Icon className='fg-white' style={{fontSize:'28px', fontWeight:'bold'}} glyph='icon-nargela-download'></Icon></p>
                              </Col>
                            </Row>
                          </Grid>
@@ -80,11 +81,19 @@ var Body = React.createClass({
                           <Grid>
                             <Row>
                                 <Col xs={12}>
+                                  <Table id='example' className='display' cellSpacing='0' width='100%'>
+                                    <thead>
+                                      <tr>
+                                        <th>Name</th>
+                                        <th>Address</th>
+                                        <th>City</th>
+                                        <th>Action</th>
+                                      </tr>
+                                    </thead>
 
+                                <VenuesList data={this.state.data}/>
 
-                                <VenuesList id='example' data={this.state.data}/>
-
-
+                                </Table>
                                 </Col>
                             </Row>
                           </Grid>
@@ -102,29 +111,33 @@ var Body = React.createClass({
 });
 var VenuesList = React.createClass({
   render: function() {
-    console.log(this.props.data.venues);
+    //console.log(this.props.data.venues);
     return (
-      <Table id='example' className='display' cellSpacing='0' width='100%'>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Address</th>
-            <th>City</th>
-          </tr>
-        </thead>
+
 
       <tbody>
          {
-             this.props.data.venues.map(function(venue) {
+             this.props.data.map(function(venue, index) {
+               var uID = venue._id;
+               var details = 'venues/detail/' + uID ;
+               var edits = 'venues/edit/' + uID ;
+               var deletes = 'venues/remove/' + uID ;
                return <tr key={venue._id}>
-                 <td><img src={venue.photos} width='70' />&nbsp;&nbsp;{venue.name}</td>
+                 <td><img src={venue.photos} width='80' height='80' style={{borderRadius: '100%', backgroundColor: '#ddd'}}/>&nbsp;&nbsp;{venue.name}</td>
                  <td style={{wordWrap: 'break-word', width: '200px'}}>{venue.address}<br></br>{venue.neighborhood}</td>
                  <td>{venue.city}</td>
+                   <td>
+                     <p>
+                       <a href={details} style={{textDecoration: 'none', color: 'inherit'}}><Button xs outlined style={{marginBottom: 0, marginTop:5}} bsStyle='info'><Icon className="icon-dripicons-preview" style={{fontSize:11}}></Icon></Button>{' '}</a>
+                       <a href={edits} style={{textDecoration: 'none', color: 'inherit'}}><Button xs outlined style={{marginBottom: 0, marginTop:5}} bsStyle='warning'><Icon className="icon-dripicons-document-edit" style={{fontSize:12}}></Icon></Button>{' '}</a>
+                       <a href={deletes} style={{textDecoration: 'none', color: 'inherit'}}><Button xs outlined style={{marginBottom: 0, marginTop:5}} bsStyle='danger'><Icon className="icon-dripicons-trash" style={{fontSize:12}}></Icon></Button>{' '}</a>
+                     </p>
+                   </td>
                </tr>
              })
          }
      </tbody >
-</Table>
+
     )
   }
 });

@@ -1,0 +1,196 @@
+import classNames from 'classnames';
+import SidebarMixin from 'global/jsx/sidebar_component';
+
+import Header from 'common/header';
+import Sidebar from 'common/sidebar';
+import Footer from 'common/footer';
+
+var serviceUrl = 'http://jiggie.herokuapp.com/admin/admin/';
+var UrlTable = 'venues';
+var Pages = '10';
+var Token = 'dsabalsdbaiyzVYVKJD78t87tgBQGK9sfhkslhfdksCFCJjgvgKV98y98h90z3pd';
+var intervalHandle = null;
+
+class GalleryItem extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      active: this.props.active || false,
+      counts: (Math.round(Math.random() * 20) + 4)
+    };
+  }
+  handleIncrement(e) {
+    if(this.state.active) return;
+    this.setState({
+      active: true,
+      counts: this.state.counts+1
+    });
+  }
+
+  render() {
+    return (
+      <Container>
+        <Grid>
+          <Row>
+            <Col xs={12}>
+      <PanelContainer>
+        <Panel>
+          <PanelHeader>
+            <Grid className='gallery-item'>
+              <Row>
+                <Col xs={12} style={{padding: 12.5, marginTop: '20'}}>
+                  <a className='gallery-1 gallery-item-link' href={'/imgs/gallery/'+this.props.image+'.jpg'} title={this.props.title}>
+                    <Img responsive src={'/imgs/gallery/'+this.props.image+'-thumb.jpg'} alt={this.props.title} width='200' height='150'/>
+                    <div className='black-wrapper text-center'>
+                      <Table style={{height: '100%', width: '100%'}}>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <Icon glyph='icon-outlined-magnifier-plus icon-3x' />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </Table>
+                    </div>
+                  </a>
+                  <div className='text-center'>
+                    <h4 className='fg-darkgrayishblue75 hidden-xs' style={{textTransform: 'uppercase'}}>{this.props.title}</h4>
+                    <h6 className='fg-darkgrayishblue75 visible-xs' style={{textTransform: 'uppercase'}}>{this.props.title}</h6>
+                    <h5 className='fg-darkgray50 hidden-xs' style={{textTransform: 'uppercase'}}>{this.props.subtitle}</h5>
+                    <h6 className='visible-xs' style={{textTransform: 'uppercase'}}><small className='fg-darkgray50'>{this.props.subtitle}</small></h6>
+                      <Button outlined onlyOnHover bsStyle='red' className='fav-btn' active={this.state.active} onClick={this.handleIncrement.bind(this)}>
+                        <Icon glyph='icon-flatline-heart' />
+                        <span className='counts'>{this.state.counts}</span>
+                      </Button>
+                  </div>
+                </Col>
+              </Row>
+            </Grid>
+          </PanelHeader>
+        </Panel>
+      </PanelContainer>
+    </Col>
+  </Row>
+</Grid>
+</Container>
+    );
+  }
+}
+
+class Body extends React.Component {
+  getInitialState(){
+    return {
+       data: {
+          venues: []
+       }
+    };
+  }
+  loadFromServer() {
+    $.ajax({
+      //http://jiggie.herokuapp.com/admin/admin/users/list?admin_token=dsabalsdbaiyzVYVKJD78t87tgBQGK9sfhkslhfdksCFCJjgvgKV98y98h90z3pd&per_page=100
+      //url: serviceUrl + UrlTable +'/List?admin_token=' + Token + '&per_page=' + Pages,
+      url: 'http://localhost/api/venues.json',
+      dataType: 'json',
+      cache: false,
+      success: function(data) {
+        //console.log(data);
+      if (this.isMounted()) {
+        this.setState({data: data});
+        clearInterval(intervalHandle);
+      }
+      }.bind(this),
+      error: function(xhr, status, err) {
+      //console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  }
+  componentDidMount() {
+    //////
+      intervalHandle = setInterval(this.loadFromServer, 1);
+    ///////
+    var links = document.getElementsByClassName('gallery-1');
+    $('.gallery-1').unbind('click').bind('click', function(event) {
+      blueimp.Gallery(links, {
+        index: $(this).get(0),
+        event: event
+      });
+    });
+  }
+  render() {
+    return (
+      <Container id='body'>
+        <Grid>
+          <Row>
+            <Col xs={12}>
+              <PanelContainer>
+                   <Panel>
+
+                     <PanelHeader className='bg-darkgreen45 fg-white' style={{marginBottom: 20}}>
+                       <Grid>
+                         <Row>
+                           <Col xs={6}>
+                             <h3>Venues</h3>
+                           </Col>
+                           <Col xs={6}>
+                             <p className='text-right' style={{paddingTop: '10px'}}><Icon className='fg-white' style={{fontSize:'28px', fontWeight:'bold', cursor: 'pointer'}} glyph='icon-nargela-plus' onClick={this.newMember}></Icon>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Icon className='fg-white' style={{fontSize:'28px', fontWeight:'bold'}} glyph='icon-nargela-download'></Icon></p>
+                           </Col>
+                         </Row>
+                       </Grid>
+                     </PanelHeader>
+                     <PanelBody>
+                       <Grid>
+
+                          <VenuesList />
+
+                       </Grid>
+
+                       {this.props.children}
+
+                    </PanelBody>
+
+                   </Panel>
+              </PanelContainer>
+            </Col>
+          </Row>
+          </Grid>
+          </Container>
+    );
+  }
+}
+class VenuesList extends React.Component {
+
+   render() {
+
+        return (
+
+               <Row className='gallery-view'>
+
+                <Col xs={6} sm={4} collapseRight >
+
+                </Col>
+
+               </Row>
+
+        );
+
+   }
+
+}
+
+@SidebarMixin
+export default class extends React.Component {
+  render() {
+    var classes = classNames({
+      'container-open': this.props.open
+    });
+
+    return (
+      <Container id='container' className={classes}>
+        <Sidebar />
+        <Header />
+        <Body />
+        <Footer />
+      </Container>
+    );
+  }
+}

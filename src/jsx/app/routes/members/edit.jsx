@@ -45,17 +45,39 @@ var Body = React.createClass({
       id: 'success',
       type: 'success',
       singleton: false,
-      message: 'Succes Add New Members',
+      message: 'Succes Updated Members',
       showCloseButton: true
     });
   },
   getInitialState: function() {
   return {data: []};
   },
+  loadFromServer: function() {
+    var url = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname;
+    var id = url.substring(url.lastIndexOf('/') + 1);
+  $.ajax({
+    url: 'http://localhost:9000/api/users/'+ id,
+    dataType: 'json',
+    cache: false,
+    success: function(data) {
+    this.setState({
+      data : data
+    });
+    }.bind(this),
+    error: function(xhr, status, err) {
+    //console.error(this.props.url, status, err.toString());
+    }.bind(this)
+  });
+  },
+  componentDidMount: function() {
+  this.loadFromServer();
+  //setInterval(this.loadFromServer, 1000);
+  },
   handleSubmit: function(e) {
 
   /////handle form
   e.preventDefault();
+  id = React.findDOMNode(this.refs.id).value.trim();
   first_name = React.findDOMNode(this.refs.first_name).value.trim();
   last_name = React.findDOMNode(this.refs.last_name).value.trim();
   email = React.findDOMNode(this.refs.email).value.trim();
@@ -66,7 +88,7 @@ var Body = React.createClass({
   photos = React.findDOMNode(this.refs.photos).value.trim();
 
   /// if empty
-  if (!first_name) {
+  if (!id || !first_name) {
     this.errorNotificationValidate();
     return;
   }
@@ -82,15 +104,15 @@ var Body = React.createClass({
     birthday: birthday,
     location: lokasi,
     profile_image_url: photos,
-    created_at : today
+    updated_at : today
   };
   $.ajax({
     //url: serviceUrl+'users',
-    url: 'http://localhost:9000/api/users',
+    url: 'http://localhost:9000/api/users/' + id,
     //data: JSON.stringify({ customer: customer }),
     //data: {customer: JSON.stringify(customer)},
     data : formData,
-    type: 'POST',
+    type: 'PUT',
     dataType: 'json',
     traditional: true,
     cache: false,
@@ -120,9 +142,8 @@ var Body = React.createClass({
     data : data_array
   });
   },
-
   render: function() {
-     this.state.data;
+     var row = this.state.data;
     return (
       <Container id='body'>
         <Grid>
@@ -134,7 +155,7 @@ var Body = React.createClass({
                          <Grid>
                            <Row>
                              <Col xs={6}>
-                               <h3>Add New Members</h3>
+                               <h3 style={{textTransform: 'capitalize'}}>Edit Members - {row.first_name} {row.last_name}</h3>
                              </Col>
                              <Col xs={6}>
 
@@ -148,15 +169,23 @@ var Body = React.createClass({
                               <Form onSubmit={this.handleSubmit}>
                                 <Col xs={6}>
 
+                                    <FormGroup>
+                                      <Label htmlFor='firstname'><img src={row.profile_image_url} width='150' height='150' style={{borderRadius: '100%'}}/></Label>
+                                    </FormGroup>
+                                    <FormGroup>
 
 
+                                        <Input autofocus type='hidden' id='id' placeholder='First Name' ref="id" name="id" value={row._id}/>
+
+
+                                    </FormGroup>
                                     <FormGroup>
                                       <Label htmlFor='firstname'>First Name</Label>
                                       <InputGroup>
                                         <InputGroupAddon>
                                           <Icon glyph='icon-ikons-user' />
                                         </InputGroupAddon>
-                                        <Input autoFocus type='text' id='first_name' placeholder='First Name' ref="first_name" name="first_name" value={this.state.data.first_name}/>
+                                        <Input autofocus type='text' id='first_name' placeholder='First Name' ref="first_name" name="first_name" value={this.state.data.first_name} onChange={this.handleChange}/>
 
                                       </InputGroup>
                                     </FormGroup>
@@ -168,7 +197,7 @@ var Body = React.createClass({
                                         <InputGroupAddon>
                                           <Icon glyph='icon-ikons-user' />
                                         </InputGroupAddon>
-                                        <Input type='text' id='last_name' placeholder='Last Name' ref="last_name" name="last_name" value={this.state.data.last_name}/>
+                                        <Input type='text' id='last_name' placeholder='Last Name' ref="last_name" name="last_name" value={this.state.data.last_name} onChange={this.handleChange} />
 
                                       </InputGroup>
                                     </FormGroup>
@@ -178,13 +207,14 @@ var Body = React.createClass({
                                         <InputGroupAddon>
                                           <Icon glyph='icon-fontello-mail' />
                                         </InputGroupAddon>
-                                        <Input type='email' id='email' placeholder='Email' ref="email" name="email" value={this.state.data.email}/>
+                                        <Input type='email' id='email' placeholder='Email' ref="email" name="email" value={this.state.data.email} onChange={this.handleChange}/>
 
                                       </InputGroup>
                                     </FormGroup>
                                     <FormGroup>
                                       <Label htmlFor='gender'>Gender</Label>
-                                      <Select id='gender' defaultValue='Male' ref="gender" name="gender">
+                                      <Select id='gender' defaultValue={row.gender} ref="gender" name="gender">
+                                        <option value={row.gender}>{row.gender}</option>
                                         <option value='male'>Male</option>
                                         <option value='female'>Female</option>
 
@@ -196,7 +226,7 @@ var Body = React.createClass({
                                 <Col xs={6}>
                                   <FormGroup>
                                     <Label htmlFor='about'>About</Label>
-                                    <Textarea id='about' rows='3' placeholder='about' ref="about" name="about" value={this.state.data.about}/>
+                                    <Textarea id='about' rows='3' placeholder='about' ref="about" name="about" value={this.state.data.about} onChange={this.handleChange}/>
                                   </FormGroup>
 
 
@@ -206,7 +236,7 @@ var Body = React.createClass({
                                       <InputGroupAddon>
                                         <Icon glyph='icon-fontello-calendar-2' />
                                       </InputGroupAddon>
-                                      <Input type='text' id='birthday' placeholder='birthday' ref="birthday" name="birthday" value={this.state.data.birthday}/>
+                                      <Input type='text' id='birthday' placeholder='birthday' ref="birthday" name="birthday" value={this.state.data.birthday} onChange={this.handleChange}/>
 
                                     </InputGroup>
                                   </FormGroup>
@@ -216,7 +246,7 @@ var Body = React.createClass({
                                       <InputGroupAddon>
                                         <Icon glyph='icon-fontello-location-8' />
                                       </InputGroupAddon>
-                                      <Input type='text' id='lokasi' placeholder='location' ref="lokasi" name="lokasi" value={this.state.data.lokasi}/>
+                                      <Input type='text' id='lokasi' placeholder='location' ref="lokasi" name="lokasi" value={this.state.data.location} onChange={this.handleChange}/>
 
                                     </InputGroup>
                                   </FormGroup>
@@ -226,7 +256,7 @@ var Body = React.createClass({
                                       <InputGroupAddon>
                                         <Icon glyph='icon-ikons-user' />
                                       </InputGroupAddon>
-                                      <Input type='text' id='photos' placeholder='photos' ref="photos" name="photos" value={this.state.data.photos}/>
+                                      <Input type='text' id='photos' placeholder='photos' ref="photos" name="photos" value={this.state.data.photos} onChange={this.handleChange}/>
 
                                     </InputGroup>
                                   </FormGroup>
@@ -238,7 +268,7 @@ var Body = React.createClass({
                                   </FormGroup>
                                   <div>
                                     <Button outlined bsStyle='lightgreen' onClick={this.backMember}>cancel</Button>{' '}
-                                    <Button outlined bsStyle='lightgreen' type="submit" >submit</Button>
+                                    <Button outlined bsStyle='lightgreen' type="submit" >Update</Button>
                                   </div>
                                 </Col>
                                   </Form>

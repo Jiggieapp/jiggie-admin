@@ -15,7 +15,7 @@ var Body = React.createClass({
   backMember: function() {
     //preventDefault();
     //stopPropagation();
-    this.transitionTo('/app/members');
+    this.transitionTo('/app/venues');
   },
   componentDidMount: function() {
     Messenger.options = {
@@ -45,7 +45,7 @@ var Body = React.createClass({
       id: 'success',
       type: 'success',
       singleton: false,
-      message: 'Succes Add New Members',
+      message: 'Succes Add New Venues',
       showCloseButton: true
     });
   },
@@ -56,17 +56,22 @@ var Body = React.createClass({
 
   /////handle form
   e.preventDefault();
-  first_name = React.findDOMNode(this.refs.first_name).value.trim();
-  last_name = React.findDOMNode(this.refs.last_name).value.trim();
-  email = React.findDOMNode(this.refs.email).value.trim();
-  gender = React.findDOMNode(this.refs.gender).value.trim();
-  about = React.findDOMNode(this.refs.about).value.trim();
-  birthday = React.findDOMNode(this.refs.birthday).value.trim();
-  lokasi = React.findDOMNode(this.refs.lokasi).value.trim();
-  photos = React.findDOMNode(this.refs.photos).value.trim();
+  nama = React.findDOMNode(this.refs.nama).value.trim();
+  deskripsi = React.findDOMNode(this.refs.deskripsi).value.trim();
+  phone = React.findDOMNode(this.refs.phone).value.trim();
+  url = React.findDOMNode(this.refs.url).value.trim();
+  address = React.findDOMNode(this.refs.address).value.trim();
+  address2 = React.findDOMNode(this.refs.address2).value.trim();
+  rank = React.findDOMNode(this.refs.rank).value.trim();
+  neighborhood = React.findDOMNode(this.refs.neighborhood).value.trim();
+  city = React.findDOMNode(this.refs.city).value.trim();
+  zip = React.findDOMNode(this.refs.zip).value.trim();
+  long = React.findDOMNode(this.refs.long).value.trim();
+  lat = React.findDOMNode(this.refs.lat).value.trim();
+  photos= React.findDOMNode(this.refs.photos).value.trim();
 
   /// if empty
-  if (!first_name) {
+  if (!nama) {
     this.errorNotificationValidate();
     return;
   }
@@ -74,19 +79,24 @@ var Body = React.createClass({
   var today = new Date().toLocaleDateString();
   var formData = {
 
-    first_name: first_name,
-    last_name: last_name,
-    email: email,
-    gender: gender,
-    about: about,
-    birthday: birthday,
-    location: lokasi,
-    profile_image_url: photos,
-    created_at : today
+    name: nama,
+    description: deskripsi,
+    phone: phone,
+    url: url,
+    address: address,
+    address2: address2,
+    rank: rank,
+    neighborhood: neighborhood,
+    city: city,
+    zip: zip,
+    long: long,
+    lat: lat,
+    photos : photos,
+    created_at: today
   };
   $.ajax({
     //url: serviceUrl+'users',
-    url: 'http://localhost:9000/api/users',
+    url: 'http://localhost:9000/api/venues',
     //data: JSON.stringify({ customer: customer }),
     //data: {customer: JSON.stringify(customer)},
     data : formData,
@@ -134,7 +144,7 @@ var Body = React.createClass({
                          <Grid>
                            <Row>
                              <Col xs={6}>
-                               <h3>Add New Members</h3>
+                               <h3>Add New Venues</h3>
                              </Col>
                              <Col xs={6}>
 
@@ -151,72 +161,112 @@ var Body = React.createClass({
 
 
                                     <FormGroup>
-                                      <Label htmlFor='firstname'>First Name</Label>
+                                      <Label htmlFor='firstname'>Name Venue</Label>
                                       <InputGroup>
                                         <InputGroupAddon>
                                           <Icon glyph='icon-ikons-user' />
                                         </InputGroupAddon>
-                                        <Input autoFocus type='text' id='first_name' placeholder='First Name' ref="first_name" name="first_name" value={this.state.data.first_name}/>
+                                        <Input autofocus type='text' id='nama' placeholder='Venue Name' ref="nama" name="nama" value={this.state.data.name}/>
 
                                       </InputGroup>
                                     </FormGroup>
 
-
                                     <FormGroup>
-                                      <Label htmlFor='lastname'>Last Name</Label>
+                                      <Label htmlFor='address'>Description</Label>
+                                      <Textarea id='deskripsi' rows='3' placeholder='Description' ref="deskripsi" name="deskripsi" value={this.state.data.description}/>
+                                    </FormGroup>
+                                    <FormGroup>
+                                      <Label htmlFor='firstname'>Phone Number</Label>
                                       <InputGroup>
                                         <InputGroupAddon>
-                                          <Icon glyph='icon-ikons-user' />
+                                          <Icon glyph='icon-fontello-phone' />
                                         </InputGroupAddon>
-                                        <Input type='text' id='last_name' placeholder='Last Name' ref="last_name" name="last_name" value={this.state.data.last_name}/>
+                                        <Input autofocus type='text' id='phone' placeholder='Phone' ref="phone" name="phone" value={this.state.data.phone}/>
 
                                       </InputGroup>
                                     </FormGroup>
                                     <FormGroup>
-                                      <Label htmlFor='lastname'>Email</Label>
+                                      <Label htmlFor='firstname'>Website Url</Label>
                                       <InputGroup>
                                         <InputGroupAddon>
-                                          <Icon glyph='icon-fontello-mail' />
+                                          <Icon glyph='icon-outlined-website-1' />
                                         </InputGroupAddon>
-                                        <Input type='email' id='email' placeholder='Email' ref="email" name="email" value={this.state.data.email}/>
+                                        <Input autofocus type='text' id='url' placeholder='http://' ref="url" name="url" value={this.state.data.url}/>
 
                                       </InputGroup>
                                     </FormGroup>
                                     <FormGroup>
-                                      <Label htmlFor='gender'>Gender</Label>
-                                      <Select id='gender' defaultValue='Male' ref="gender" name="gender">
-                                        <option value='male'>Male</option>
-                                        <option value='female'>Female</option>
-
-                                      </Select>
+                                      <Label htmlFor='address'>Address</Label>
+                                      <Textarea id='address' rows='3' placeholder='address' ref="address" name="address" value={this.state.data.address}/>
                                     </FormGroup>
+                                    <FormGroup>
+                                      <Label htmlFor='address2'>Address2</Label>
+                                      <Textarea id='address2' rows='3' placeholder='address2' ref="address2" name="address2" value={this.state.data.address2}/>
+                                    </FormGroup>
+
 
                                 </Col>
 
                                 <Col xs={6}>
                                   <FormGroup>
-                                    <Label htmlFor='about'>About</Label>
-                                    <Textarea id='about' rows='3' placeholder='about' ref="about" name="about" value={this.state.data.about}/>
-                                  </FormGroup>
+                                    <Label htmlFor='rank'>Ranking</Label>
+                                    <Select id='rank' defaultValue='1' ref="rank" name="rank">
+                                      <option value='1'>1</option>
+                                      <option value='2'>2</option>
+                                      <option value='3'>3</option>
+                                      <option value='4'>4</option>
+                                      <option value='5'>5</option>
 
-
-                                  <FormGroup>
-                                    <Label htmlFor='lastname'>Birthday</Label>
-                                    <InputGroup>
-                                      <InputGroupAddon>
-                                        <Icon glyph='icon-fontello-calendar-2' />
-                                      </InputGroupAddon>
-                                      <Input type='text' id='birthday' placeholder='birthday' ref="birthday" name="birthday" value={this.state.data.birthday}/>
-
-                                    </InputGroup>
+                                    </Select>
                                   </FormGroup>
                                   <FormGroup>
-                                    <Label htmlFor='lastname'>Location</Label>
+                                    <Label htmlFor='lastname'>Neighborhood</Label>
                                     <InputGroup>
                                       <InputGroupAddon>
                                         <Icon glyph='icon-fontello-location-8' />
                                       </InputGroupAddon>
-                                      <Input type='text' id='lokasi' placeholder='location' ref="lokasi" name="lokasi" value={this.state.data.lokasi}/>
+                                      <Input type='text' id='neighborhood' placeholder='neighborhood' ref="neighborhood" name="neighborhood" value={this.state.data.neighborhood}/>
+
+                                    </InputGroup>
+                                  </FormGroup>
+                                  <FormGroup>
+                                    <Label htmlFor='zip'>Zip Code</Label>
+                                    <InputGroup>
+                                      <InputGroupAddon>
+                                        <Icon glyph='icon-fontello-calendar-2' />
+                                      </InputGroupAddon>
+                                      <Input type='text' id='zip' placeholder='Zip Code' ref="zip" name="zip" value={this.state.data.zip}/>
+
+                                    </InputGroup>
+                                  </FormGroup>
+
+                                  <FormGroup>
+                                    <Label htmlFor='lastname'>City</Label>
+                                    <InputGroup>
+                                      <InputGroupAddon>
+                                        <Icon glyph='icon-fontello-location-8' />
+                                      </InputGroupAddon>
+                                      <Input type='text' id='city' placeholder='City' ref="city" name="city" value={this.state.data.city}/>
+
+                                    </InputGroup>
+                                  </FormGroup>
+                                  <FormGroup>
+                                    <Label htmlFor='lastname'>Longitute Map</Label>
+                                    <InputGroup>
+                                      <InputGroupAddon>
+                                        <Icon glyph='icon-fontello-location-7' />
+                                      </InputGroupAddon>
+                                      <Input type='text' id='long' placeholder='Longitute Maps' ref="long" name="long" value={this.state.data.long}/>
+
+                                    </InputGroup>
+                                  </FormGroup>
+                                  <FormGroup>
+                                    <Label htmlFor='lastname'>Latitute Map</Label>
+                                    <InputGroup>
+                                      <InputGroupAddon>
+                                        <Icon glyph='icon-fontello-location-7' />
+                                      </InputGroupAddon>
+                                      <Input type='text' id='lat' placeholder='Latitute Maps' ref="lat" name="lat" value={this.state.data.lat}/>
 
                                     </InputGroup>
                                   </FormGroup>

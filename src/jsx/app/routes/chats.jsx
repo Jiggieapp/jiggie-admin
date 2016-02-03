@@ -18,25 +18,19 @@ var intervalHandle = null;
 var Body = React.createClass({
   mixins: [State, Navigation],
   getInitialState: function(){
-    return {
-       data: {
-          conversations: []
-       }
-    };
+    return {data: []};
   },
   loadFromServer: function() {
     $.ajax({
       //http://jiggie.herokuapp.com/admin/admin/users/list?admin_token=dsabalsdbaiyzVYVKJD78t87tgBQGK9sfhkslhfdksCFCJjgvgKV98y98h90z3pd&per_page=100
-      url: serviceUrl + UrlTable +'/List?admin_token=' + Token + '&per_page=' + Pages,
-      //url: 'http://localhost/api/chat.json',
+      //url: serviceUrl + UrlTable +'/List?admin_token=' + Token + '&per_page=' + Pages,
+      url: 'http://localhost:9000/api/chats',
       dataType: 'json',
       cache: false,
       success: function(data) {
         //console.log(data);
-      if (this.isMounted()) {
         this.setState({data: data});
         clearInterval(intervalHandle);
-      }
       }.bind(this),
       error: function(xhr, status, err) {
       //console.error(this.props.url, status, err.toString());
@@ -45,7 +39,7 @@ var Body = React.createClass({
   },
   componentDidMount: function() {
     intervalHandle = setInterval(this.loadFromServer, 1);
-    $('#example')
+    $('#examplex')
       .addClass('nowrap')
       .dataTable({
         responsive: true,
@@ -81,10 +75,19 @@ var Body = React.createClass({
                             <Row>
                                 <Col xs={12}>
 
-
+                                  <Table id='example' className='display' cellSpacing='0' width='100%'>
+                                    <thead>
+                                      <tr>
+                                        <th>Hostname</th>
+                                        <th>Guestname</th>
+                                        <th>Chats Count</th>
+                                        <th>Last Update</th>
+                                        <th>Actions</th>
+                                      </tr>
+                                    </thead>
                                 <ChatList id='example' data={this.state.data}/>
 
-
+                                </Table>
                                 </Col>
                             </Row>
                           </Grid>
@@ -105,37 +108,35 @@ var ChatList = React.createClass({
   render: function() {
 
     //var fb_url = 'http://graph.facebook.com/v2.5/';
-    console.log(this.props.data.conversations);
+    //console.log(this.props.data.conversations);
     return (
-      <Table id='example' className='display' cellSpacing='0' width='100%'>
-        <thead>
-          <tr>
-            <th>Hostname</th>
-            <th>Guestname</th>
-            <th>Chats Count</th>
-            <th>Last Conversations</th>
-          </tr>
-        </thead>
+
 
       <tbody>
          {
-             this.props.data.conversations.map(function(chat) {
+             this.props.data.map(function(chat) {
                var picture = '/picture';
                var fidh = chat.host_id ;
                var fidg = chat.guest_id ;
+               var uID = chat._id;
                var fb_url_host = 'http://graph.facebook.com/v2.5/' + fidh + picture;
                var fb_url_guest = 'http://graph.facebook.com/v2.5/' + fidg + picture;
+               var details = 'chats/detail/' + uID ;
 
                return <tr key={chat._id}>
-                 <td><img src={fb_url_host} width='40' height='40' style={{borderRadius: '100%'}}/> &nbsp;{chat.host}</td>
-                 <td><img src={fb_url_guest} width='40' height='40' style={{borderRadius: '100%'}}/> &nbsp;{chat.guest}</td>
-                 <td>{chat.count} conversations</td>
+                 <td width='200'><img src={fb_url_host} width='40' height='40' style={{borderRadius: '100%'}}/> &nbsp;{chat.host}</td>
+                 <td width='200'><img src={fb_url_guest} width='40' height='40' style={{borderRadius: '100%'}}/> &nbsp;{chat.guest}</td>
+                 <td width='100'>{chat.count} Chats</td>
                  <td>{chat.last_updated}</td>
+                   <td>
+                     <p>
+                       <a href={details} style={{textDecoration: 'none', color: 'inherit'}}><Button xs outlined style={{marginBottom: 0, marginTop:5}} bsStyle='info'><Icon className="icon-dripicons-preview" style={{fontSize:11}}></Icon></Button>{' '}</a>
+                       </p>
+                   </td>
                </tr>
              })
          }
      </tbody >
-</Table>
     )
   }
 });

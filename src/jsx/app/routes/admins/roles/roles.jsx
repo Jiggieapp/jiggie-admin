@@ -12,7 +12,7 @@ var Body = React.createClass({
   addNew: function(e) {
     e.preventDefault();
     e.stopPropagation();
-    this.transitionTo('/app/admin-user/new');
+    this.transitionTo('/app/admin-user/roles/new');
   },
   getInitialState: function(){
      return {data: []};
@@ -21,7 +21,7 @@ var Body = React.createClass({
     $.ajax({
       //http://jiggie.herokuapp.com/admin/admin/users/list?admin_token=dsabalsdbaiyzVYVKJD78t87tgBQGK9sfhkslhfdksCFCJjgvgKV98y98h90z3pd&per_page=100
       //url: serviceUrl + UrlTable +'/List?admin_token=' + Token + '&per_page=' + Pages,
-      url: 'http://localhost:9000/api/admins',
+      url: 'http://localhost:9000/api/roles',
       dataType: 'json',
       cache: false,
       success: function(data) {
@@ -67,7 +67,7 @@ var Body = React.createClass({
                          <Grid>
                            <Row>
                              <Col xs={6}>
-                               <h3>Admin Members</h3>
+                               <h3>Roles Admin Settings</h3>
                              </Col>
                              <Col xs={6}>
                                <p className='text-right' style={{paddingTop: '10px'}}><Icon className='fg-white' style={{fontSize:'28px', fontWeight:'bold', cursor: 'pointer'}} glyph='icon-nargela-plus' onClick={this.addNew}></Icon>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Icon className='fg-white' style={{fontSize:'28px', fontWeight:'bold'}} glyph='icon-nargela-download'></Icon></p>
@@ -84,13 +84,12 @@ var Body = React.createClass({
                                       <thead>
                                         <tr>
 
-                                          <th>First Name</th>
-                                          <th>Email / Username</th>
-                                          <th>Roles</th>
+                                          <th>Title</th>
+                                          <th>Values</th>
                                           <th>Action</th>
                                         </tr>
                                       </thead>
-                                        <AdminList data={this.state.data}/>
+                                        <RolesList data={this.state.data} />
                                     </Table>
                                   </Well>
 
@@ -111,7 +110,7 @@ var Body = React.createClass({
   }
 });
 
-var AdminList = React.createClass({
+var RolesList = React.createClass({
 
   render: function() {
     //console.log(this.props.data);
@@ -119,20 +118,18 @@ var AdminList = React.createClass({
 
       <tbody>
          {
-             this.props.data.map(function(admin) {
+             this.props.data.map(function(role) {
 
-               var uID = admin._id;
-        
-               var edits = 'admin-user/edit/' + uID ;
-               var deletes = 'admin-user/remove/' + uID ;
+               var uID = role._id;
+
+               var edits = 'roles/edit/' + uID ;
+               var deletes = 'roles/remove/' + uID ;
                //var url_details = ''
 
-               return <tr key={admin._id}>
-                 <td><img src='/imgs/avatars/avatar2.png' width='40' height='40' style={{borderRadius:'100%', cursor: 'pointer'}} />&nbsp;&nbsp;{admin.first_name}&nbsp;{admin.last_name}</td>
-                 <td>{admin.email}</td>
-                 <td>
-                   {admin.roles}
-                 </td>
+               return <tr key={role._id}>
+                 <td>{role.title}</td>
+                 <td>{role.values}</td>
+
                  <td><a href={edits} style={{textDecoration: 'none', color: 'inherit'}}><Button sm bsStyle='green'><Icon glyph='icon-fontello-pencil' /></Button></a>&nbsp;&nbsp;&nbsp;<a href={deletes} style={{textDecoration: 'none', color: 'inherit'}}><Button sm bsStyle='red'><Icon glyph='icon-fontello-trash-1'/></Button></a></td>
                </tr>
              })

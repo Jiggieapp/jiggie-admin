@@ -12,10 +12,10 @@ var Body = React.createClass({
   onChange: function() {
     //console.log('onChange');
   },
-  backAdmin: function() {
-    //e.preventDefault();
-    //e.stopPropagation();
-    this.transitionTo('/app/admin-user');
+  back: function() {
+    //preventDefault();
+    //stopPropagation();
+    this.transitionTo('/app/admin-user/roles');
   },
   componentDidMount: function() {
     Messenger.options = {
@@ -45,53 +45,70 @@ var Body = React.createClass({
       id: 'success',
       type: 'success',
       singleton: false,
-      message: 'Succes Add New Admins',
+      message: 'Succes Updated Roles',
       showCloseButton: true
     });
   },
   getInitialState: function() {
   return {data: []};
   },
+  loadFromServer: function() {
+    var url = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname;
+    var id = url.substring(url.lastIndexOf('/') + 1);
+  $.ajax({
+    url: 'http://localhost:9000/api/roles/'+ id,
+    dataType: 'json',
+    cache: false,
+    success: function(data) {
+    this.setState({
+      data : data
+    });
+    }.bind(this),
+    error: function(xhr, status, err) {
+    //console.error(this.props.url, status, err.toString());
+    }.bind(this)
+  });
+  },
+  componentDidMount: function() {
+  this.loadFromServer();
+  //setInterval(this.loadFromServer, 1000);
+  },
   handleSubmit: function(e) {
 
   /////handle form
   e.preventDefault();
-  first_name = React.findDOMNode(this.refs.first_name).value.trim();
-  last_name = React.findDOMNode(this.refs.last_name).value.trim();
-  email = React.findDOMNode(this.refs.email).value.trim();
-  password = React.findDOMNode(this.refs.password).value.trim();
-  roles = React.findDOMNode(this.refs.roles).value.trim();
+  id = React.findDOMNode(this.refs.id).value.trim();
+  title = React.findDOMNode(this.refs.title).value.trim();
+  values = React.findDOMNode(this.refs.values).value.trim();
   //photos = React.findDOMNode(this.refs.photos).value.trim();
 
   /// if empty
-  if (!first_name || !email || !password || !roles) {
+  if (!id) {
     this.errorNotificationValidate();
     return;
   }
   ///from form data
   var today = new Date().toLocaleDateString();
   var formData = {
-    first_name: first_name,
-    last_name: last_name,
-    email: email,
-    password: password,
-    roles: roles
+
+    title: title,
+    values: values
     //photos: photos
   };
   $.ajax({
     //url: serviceUrl+'users',
-    url: 'http://localhost:9000/api/admins',
+    url: 'http://localhost:9000/api/roles/' + id,
     //data: JSON.stringify({ customer: customer }),
     //data: {customer: JSON.stringify(customer)},
     data : formData,
-    type: 'POST',
+    type: 'PUT',
     dataType: 'json',
     traditional: true,
     cache: false,
     success: function(data) {
     //console.log(data)
     this.successNotification();
-    this.backAdmin();
+    this.back();
     }.bind(this),
     error: function(xhr, status, err) {
     this.errorNotification();
@@ -136,7 +153,7 @@ var Body = React.createClass({
                          <Grid>
                            <Row>
                              <Col xs={6}>
-                               <h3>Add New Admin</h3>
+                               <h3>Edit Roles - {this.state.data.title}</h3>
                              </Col>
                              <Col xs={6}>
 
@@ -150,78 +167,40 @@ var Body = React.createClass({
                               <Form onSubmit={this.handleSubmit}>
                                 <Col xs={6}>
 
+                                  <FormGroup>
 
+
+                                      <Input autofocus type='hidden' id='id' placeholder='First Name' ref="id" name="id" value={this.state.data._id}/>
+
+
+                                  </FormGroup>
                                     <FormGroup>
-                                      <Label htmlFor='emailaddress'>Email address</Label>
+                                      <Label htmlFor='title'>Title</Label>
                                       <InputGroup>
                                         <InputGroupAddon>
-                                          <Icon glyph='icon-fontello-mail' />
+                                          <Icon glyph='icon-fontello-user' />
                                         </InputGroupAddon>
-                                        <Input autoFocus type='email' id='email' placeholder='Email address' ref="email" name="email" value={this.state.data.email}/>
+                                        <Input autoFocus type='text' id='title' placeholder='Title Roles' ref="title" name="title" value={this.state.data.title} onChange={this.handleChange}/>
                                       </InputGroup>
                                     </FormGroup>
 
                                     <FormGroup>
-                                      <Label htmlFor='password'>Password</Label>
+                                      <Label htmlFor='password'>Values Roles</Label>
                                       <InputGroup>
                                         <InputGroupAddon>
                                           <Icon glyph='icon-fontello-key' />
                                         </InputGroupAddon>
-                                        <Input type='password' id='password' placeholder='Password' ref="password" name="password" value={this.state.data.Password}/>
+                                        <Input type='text' id='values' placeholder='Values Roles' ref="values" name="values" value={this.state.data.values} onChange={this.handleChange}/>
 
                                       </InputGroup>
 
                                     </FormGroup>
-                                    <FormGroup>
-                                      <Label htmlFor='firstname'>First Name</Label>
-                                      <InputGroup>
-                                        <InputGroupAddon>
-                                          <Icon glyph='icon-ikons-user' />
-                                        </InputGroupAddon>
-                                        <Input type='text' id='first_name' placeholder='First Name' ref="first_name" name="first_name" value={this.state.data.first_name}/>
 
-                                      </InputGroup>
-                                    </FormGroup>
-
-
-                                    <FormGroup>
-                                      <Label htmlFor='lastname'>Last Name</Label>
-                                      <InputGroup>
-                                        <InputGroupAddon>
-                                          <Icon glyph='icon-ikons-user' />
-                                        </InputGroupAddon>
-                                        <Input type='text' id='last_name' placeholder='Last Name' ref="last_name" name="last_name" value={this.state.data.last_name}/>
-
-                                      </InputGroup>
-                                    </FormGroup>
-
-
-
-                                </Col>
-                                <Col xs={6}>
-                                  <FormGroup>
-                                    <Label htmlFor='role'>Roles</Label>
-                                    <Select id='roles' defaultValue='Super Administrator' ref="roles" name="roles">
-                                      <option value='super administrator'>Super Administrator</option>
-                                      <option value='administrator'>Administrator</option>
-                                      <option value='admin'>Admin</option>
-                                      <option value='manager'>Manager</option>
-                                      <option value='user'>User</option>
-                                    </Select>
-                                  </FormGroup>
-
-                                  <FormGroup>
-                                    <Label htmlFor='fileinput'>Profile Image</Label>
-                                    <Input id='fileinput' type='file' />
-                                      <HelpBlock>
-                                        Max allowed size:2MB <br></br>Allowed file types :png,jpg
-                                      </HelpBlock>
-                                  </FormGroup>
                                 </Col>
                                 <Col xs={12}>
                                   <br/>
                                   <div>
-                                    <Button outlined bsStyle='lightgreen' onClick={this.backAdmin}>cancel</Button>{' '}
+                                    <Button outlined bsStyle='lightgreen' onClick={this.back}>cancel</Button>{' '}
                                     <Button outlined bsStyle='lightgreen' type="submit">submit</Button>
                                   </div>
                                   <br/>

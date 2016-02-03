@@ -2,16 +2,46 @@ require('./globals');
 
 var fs = require('fs');
 var path = require('path');
+var engine = require('ejs-mate');
 var express = require('express');
+var mongoose = require('mongoose');
+var passport = require('passport');
+var env = process.env.NODE_ENV || 'development';
+var envConfig = require('./config/env')[env];
+var flash = require('connect-flash');
+//var bodyParser = require('body-parser');
+var session = require('express-session');
 var cors = require('cors');
 var compression = require('compression');
 var cookieParser = require('cookie-parser');
 
+/////database
+//mongoose.connect('mongodb://localhost/jiggiex');
+
+// database config
+mongoose.connect(envConfig.db);
+
+// passport config
+require('./config/passport')(passport);
+
 var app = express();
 app.use(compression());
+//app.use(bodyParser());
 app.use(cookieParser());
 app.use(express.static(path.join(process.cwd(), 'public')));
 app.use(cors());
+
+app.engine('ejs', engine);
+app.set('view engine', 'ejs');
+
+// required for passport
+app.use(express.static('public'));
+app.use(session({ secret: 'thisisverys3crett', cookie: { maxAge: 60000 }, resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+require('./routes')(app, passport);
 
 var corsOptions = {
   origin: 'http://localhost:8080'
