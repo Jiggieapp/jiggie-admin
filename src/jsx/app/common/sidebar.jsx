@@ -39,74 +39,7 @@ class ApplicationSidebar extends React.Component {
           </Row>
         </Grid>
         <hr style={{borderColor: '#bababa', borderWidth: 1, marginTop: 15, marginBottom: 0, width: 200}} />
-        <Grid gutterBottom>
-          <Row>
-            <Col xs={12}>
-              <div className='sidebar-header'>EXTRAS</div>
-              <div className='sidebar-nav-container'>
-                <SidebarNav style={{marginBottom: 0}}>
-
-                  <SidebarNavItem glyph='devicon-bootstrap-plain' name={<span>Hostings <BLabel className='bg-darkblue fg-white'>7</BLabel></span>}>
-                    <SidebarNav>
-                      <SidebarNavItem name='Grid' href='/app/docs/bootstrap/grid' />
-                      <SidebarNavItem name='Typography' href='/app/docs/bootstrap/typography' />
-                      <SidebarNavItem name='Code' href='/app/docs/bootstrap/code' />
-                      <SidebarNavItem name='Tables' href='/app/docs/bootstrap/tables' />
-                      <SidebarNavItem name='Forms' href='/app/docs/bootstrap/forms' />
-                      <SidebarNavItem name='Form Controls'>
-                        <SidebarNav>
-                          <SidebarNavItem name='Inputs' href='/app/docs/bootstrap/form_controls/inputs' />
-                          <SidebarNavItem name='Textarea' href='/app/docs/bootstrap/form_controls/textarea' />
-                          <SidebarNavItem name='Checkbox &amp; Radio' href='/app/docs/bootstrap/form_controls/checkradio' />
-                          <SidebarNavItem name='Select' href='/app/docs/bootstrap/form_controls/select' />
-                          <SidebarNavItem name='Buttons' href='/app/docs/bootstrap/form_controls/buttons' />
-                        </SidebarNav>
-                      </SidebarNavItem>
-                      <SidebarNavItem name='Components'>
-                        <SidebarNav>
-                          <SidebarNavItem name='Dropdowns' href='/app/docs/bootstrap/components/dropdowns' />
-                          <SidebarNavItem name='Button Groups' href='/app/docs/bootstrap/components/button_groups' />
-                          <SidebarNavItem name='Input Groups' href='/app/docs/bootstrap/components/input_groups' />
-                          <SidebarNavItem name='Navs' href='/app/docs/bootstrap/components/navs' />
-                          <SidebarNavItem name='Navbar' href='/app/docs/bootstrap/components/navbar' />
-                          <SidebarNavItem name='Breadcrumbs' href='/app/docs/bootstrap/components/breadcrumbs' />
-                          <SidebarNavItem name='Pagination' href='/app/docs/bootstrap/components/pagination' />
-                          <SidebarNavItem name='Labels &amp; Badges' href='/app/docs/bootstrap/components/labels_and_badges' />
-                          <SidebarNavItem name='Jumbotron' href='/app/docs/bootstrap/components/jumbotron' />
-                          <SidebarNavItem name='Alerts' href='/app/docs/bootstrap/components/alerts' />
-                          <SidebarNavItem name='Progress bars' href='/app/docs/bootstrap/components/progress-bars' />
-                          <SidebarNavItem name='Media' href='/app/docs/bootstrap/components/media' />
-                          <SidebarNavItem name='List Group' href='/app/docs/bootstrap/components/list-group' />
-                        </SidebarNav>
-                      </SidebarNavItem>
-
-                    </SidebarNav>
-                  </SidebarNavItem>
-                  <SidebarNavItem glyph='icon-feather-toggle' name={<span>Blocks <BLabel className='bg-deepred fg-white'>7</BLabel></span>}>
-                    <SidebarNav>
-                      <SidebarNavItem href='/app/ui-elements/buttons' glyph='icon-mfizz-oracle' name='Buttons' />
-                      <SidebarNavItem href='/app/ui-elements/dropdowns' glyph='icon-outlined-arrow-down' name='Dropdowns' />
-                      <SidebarNavItem href='/app/ui-elements/tabs-and-navs' glyph='icon-nargela-navigation' name='Tabs &amp; Navs' />
-                      <SidebarNavItem href='/app/ui-elements/sliders' glyph='icon-outlined-three-stripes-horiz' name='Sliders' />
-                      <SidebarNavItem href='/app/ui-elements/knobs' glyph='icon-ikons-chart-3-8' name='Knobs' />
-                      <SidebarNavItem href='/app/ui-elements/modals' glyph='icon-pixelvicon-browser-1' name='Modals' />
-                      <SidebarNavItem href='/app/ui-elements/messenger' glyph='icon-dripicons-message' name='Messenger' />
-                    </SidebarNav>
-                  </SidebarNavItem>
-                  <SidebarNavItem glyph='icon-stroke-gap-icons-Files float-right-rtl' name={<span>Tikets <BLabel className='bg-danger fg-white'>3</BLabel></span>}>
-                    <SidebarNav>
-                      <SidebarNavItem glyph='icon-mfizz-fire-alt' href='/app/forms/controls' name='Controls' />
-                      <SidebarNavItem glyph='icon-stroke-gap-icons-Edit' href='/app/forms/x-editable' name='X-Editable' />
-                      <SidebarNavItem glyph='icon-simple-line-icons-magic-wand' href='/app/forms/wizard' name='Wizard' />
-                    </SidebarNav>
-                  </SidebarNavItem>
-                  </SidebarNav>
-              </div>
-            </Col>
-          </Row>
-        </Grid>
-        <hr style={{borderColor: '#bababa', borderWidth: 1, marginTop: 5, marginBottom: 0, width: 200}} />
-      </div>
+        </div>
     );
   }
 }
