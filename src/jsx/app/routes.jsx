@@ -26,7 +26,12 @@ import VenuesDetail from 'routes/venues/view';
 import VenuesEdit from 'routes/venues/edit';
 import VenuesDelete from 'routes/venues/delete';
 
-import Events from 'routes/events';
+import Events from 'routes/events/events';
+import EventsNew from 'routes/events/new';
+import EventsDetail from 'routes/events/view';
+import EventsEdit from 'routes/events/edit';
+import EventsDelete from 'routes/events/delete';
+
 import Chats from 'routes/chats';
 import Orders from 'routes/orders';
 import Lock from 'routes/lock';
@@ -73,12 +78,16 @@ export default (withHistory, onUpdate) => {
 
 
       <Route path='/app/events' component={Events} />
+      <Route path='/app/events/new' component={EventsNew} />
+      <Route path='/app/events/detail/:id' component={EventsDetail} />
+      <Route path='/app/events/edit/:id' component={EventsEdit} />
+      <Route path='/app/events/remove/:id' component={EventsDelete} />
       <Route path='/app/chats' component={Chats} />
       <Route path='/app/orders' component={Orders} />
       <Route path='/app/lock' component={Lock} />
       <Route path='/app/logout' component={Homepage} />
 
-    
+
 
 
     </Router>

@@ -1,5 +1,4 @@
 import { Link, State, Navigation } from 'react-router';
-
 import classNames from 'classnames';
 import SidebarMixin from 'global/jsx/sidebar_component';
 
@@ -9,10 +8,10 @@ import Footer from 'common/footer';
 
 var Body = React.createClass({
   mixins: [State, Navigation],
-  addNew: function(e) {
+  new: function(e) {
     e.preventDefault();
     e.stopPropagation();
-    this.transitionTo('/app/admin-user/new');
+    this.transitionTo('/app/events/new');
   },
   getInitialState: function(){
      return {data: []};
@@ -21,7 +20,7 @@ var Body = React.createClass({
     $.ajax({
       //http://jiggie.herokuapp.com/admin/admin/users/list?admin_token=dsabalsdbaiyzVYVKJD78t87tgBQGK9sfhkslhfdksCFCJjgvgKV98y98h90z3pd&per_page=100
       //url: serviceUrl + UrlTable +'/List?admin_token=' + Token + '&per_page=' + Pages,
-      url: 'http://localhost:9000/api/admins',
+      url: 'http://localhost:9000/api/events',
       dataType: 'json',
       cache: false,
       success: function(data) {
@@ -33,126 +32,91 @@ var Body = React.createClass({
       }.bind(this)
     });
   },
-  componentDidMount: function() {
-    this.loadFromServer();
-    //intervalHandle = setInterval(this.loadFromServer, 1);
-    $('#examplex')
-      .addClass('nowrap')
-      .dataTable({
-        responsive: true,
-        columnDefs: [
-          { targets: [-1, -3], className: 'dt-body-right' }
-        ]
-    });
-  },
-  //componentDidMount: function() {
-    //$('#example')
-    //  .addClass('nowrap')
-    //  .dataTable({
-      //  responsive: true,
-        //columnDefs: [
-          //{ targets: [-1, -3], className: 'dt-body-right' }
-        //]
-    //});
-  //},
+    componentDidMount: function() {
+      this.loadFromServer();
+
+    },
   render: function() {
+    //var row = this.state.data;
+    //console.log(row);
+
+
+    var events = this.state.data;
+    console.log(events);
     return (
       <Container id='body'>
         <Grid>
           <Row>
-            <Col xs={12}>
-              <PanelContainer>
-                   <Panel>
-                       <PanelHeader className='bg-darkgreen45 fg-white' style={{marginBottom: 20}}>
-                         <Grid>
-                           <Row>
-                             <Col xs={8}>
-                               <h3>Admin Members</h3>
-                             </Col>
-                             <Col xs={3}>
-                               <p className='text-right' style={{paddingTop: '10px'}}><Icon className='fg-white' style={{fontSize:'28px', fontWeight:'bold', cursor: 'pointer'}} glyph='icon-nargela-plus' onClick={this.addNew}></Icon></p>
-                             </Col>
-                             <Col xs={1}><ExportAdmin data={this.state.data} style={{cursor: 'pointer'}}/></Col>
+            <Col sm={12}>
+              <PanelContainer controlStyles='bg-darkgreen45 fg-white'>
+                <Panel>
+                  <PanelHeader className='bg-darkgreen45 fg-white' style={{marginBottom: 0}}>
+                    <Grid>
+                      <Row>
+                        <Col xs={8}>
+                          <h3>Events</h3>
+                        </Col>
+                        <Col xs={3}>
+                          <p className='text-right' style={{paddingTop: '10px'}}><Icon className='fg-white' style={{fontSize:'28px', fontWeight:'bold', cursor: 'pointer'}} glyph='icon-nargela-plus' onClick={this.new}></Icon></p>
+                        </Col>
+                        <Col xs={1}><ExportEvents data={this.state.data} style={{cursor: 'pointer'}}/></Col>
 
-                           </Row>
-                         </Grid>
-                       </PanelHeader>
-                        <PanelBody>
-                          <Grid>
-                            <Row>
-                                <Col xs={12}>
-                                  <Well className='bg-white'>
-                                    <Table collapsed>
-                                      <thead>
-                                        <tr>
-
-                                          <th>First Name</th>
-                                          <th>Email / Username</th>
-                                          <th>Roles</th>
-                                          <th>Action</th>
-                                        </tr>
-                                      </thead>
-                                        <AdminList data={this.state.data}/>
-                                    </Table>
-                                  </Well>
-
-                                </Col>
-                            </Row>
-                          </Grid>
-                        </PanelBody>
-                   </Panel>
+                      </Row>
+                    </Grid>
+                  </PanelHeader>
+                  <PanelBody style={{padding: 25}}>
+                    <Calendar events={events}/>
+                  </PanelBody>
+                </Panel>
               </PanelContainer>
-            </Col>
 
+            </Col>
           </Row>
         </Grid>
-
-
       </Container>
     );
   }
 });
+var Calendar = React.createClass({
+ componentDidMount: function() {
+   //const { calendar } = this.refs;
+   $('#calendar').fullCalendar({
+     header: {
+       left: 'prev,next today',
+       center: 'title',
+       right: 'month,agendaWeek,agendaDay'
+     },
 
-var AdminList = React.createClass({
+     events: 'http://localhost:9000/api/events',
+                    eventDataTransform: function (rawEventData) {
+                        return {
+                            id: rawEventData._id,
+                            title: rawEventData.title,
+                            start: rawEventData.start_datetime_str,
+                            end: rawEventData.end_datetime_str,
+                            url: "/app/events/edit/"+rawEventData._id
+                        };
+                    }
+   });
+ },
+  render: function(){
 
-  render: function() {
-    //console.log(this.props.data);
-    return (
-
-      <tbody>
-         {
-             this.props.data.map(function(admin) {
-
-               var uID = admin._id;
-
-               var edits = 'admin-user/edit/' + uID ;
-               var deletes = 'admin-user/remove/' + uID ;
-               //var url_details = ''
-
-               return <tr key={admin._id}>
-                 <td><img src='/imgs/avatars/avatar2.png' width='40' height='40' style={{borderRadius:'100%', cursor: 'pointer'}} />&nbsp;&nbsp;{admin.first_name}&nbsp;{admin.last_name}</td>
-                 <td>{admin.email}</td>
-                 <td>
-                   {admin.roles}
-                 </td>
-                 <td><a href={edits} style={{textDecoration: 'none', color: 'inherit'}}><Button sm bsStyle='green'><Icon glyph='icon-fontello-pencil' /></Button></a>&nbsp;&nbsp;&nbsp;<a href={deletes} style={{textDecoration: 'none', color: 'inherit'}}><Button sm bsStyle='red'><Icon glyph='icon-fontello-trash-1'/></Button></a></td>
-               </tr>
-             })
-         }
-     </tbody>
-
+    return(
+      <div id="calendar"></div>
     )
   }
 
 });
-var ExportAdmin = React.createClass({
+
+/////event export
+var ExportEvents = React.createClass({
   componentDidMount: function(){
     $('.export').click(function(){
         var data = $('#txt').val();
         if(data == '')
             return;
 
-        JSONToCSVConvertor(data, "Admin Jiggie Report", true);
+        JSONToCSVConvertor(data, "Events Jiggie Report", true);
     });
 function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
